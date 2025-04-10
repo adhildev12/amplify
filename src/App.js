@@ -1,32 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { withAuthenticator, onAuthUIStateChange } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 
 function App() {
+    const [user, setUser] = useState(null);
+
     useEffect(() => {
-        const listener = onAuthUIStateChange((authState, authData) => {
-            if (authState === 'signedin') {
-                console.log('User signed in:', authData);
-                // Optional: Redirect to a specific page after login
-                window.location.href = '/dashboard'; // Change '/dashboard' to your desired route
+        const checkUser = async () => {
+            try {
+                const currentUser = await Auth.currentAuthenticatedUser();
+                setUser(currentUser);
+                console.log('User signed in:', currentUser);
+            } catch (error) {
+                console.log('User is not signed in');
+                setUser(null);
             }
+        };
 
-            if (authState === 'signedout') {
-                console.log('User signed out');
-                // Optional: Redirect to login or home page
-                window.location.href = '/login'; // Change '/login' to your desired route
-            }
-        });
-
-        return () => listener.unsubscribe(); // Clean up the listener on unmount
+        checkUser();
     }, []);
 
     const handleSignOut = async () => {
         try {
             await Auth.signOut();
-            window.location.reload(); // Refresh the app to trigger the authentication flow
+            setUser(null);
+            window.location.reload(); // Optional: Reload to trigger reauthentication
         } catch (error) {
             console.error('Error signing out:', error);
         }
@@ -39,14 +39,7 @@ function App() {
                 <p>
                     Edit <code>src/App.js</code> and save to reload.
                 </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
+                {user && <p>Welcome, {user.username}</p>}
                 <button onClick={handleSignOut} className="App-button">
                     Sign Out
                 </button>
@@ -55,7 +48,6 @@ function App() {
     );
 }
 
-// Wrap the App with AWS Amplify Authenticator
 export default withAuthenticator(App, {
-    includeGreetings: true, // Display a greeting message after login
+    includeGreetings: true,
 });
