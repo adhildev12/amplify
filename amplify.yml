@@ -1,11 +1,10 @@
 version: 1
 applications:
-  - appRoot: /
-    frontend:
+  - frontend:
       phases:
         preBuild:
           commands:
-            - npm install
+            - npm ci
         build:
           commands:
             - npm run build
@@ -15,13 +14,9 @@ applications:
           - '**/*'
       cache:
         paths:
-          - node_modules/**/*
+          - node_modules/**/*  
     backend:
       phases:
         build:
           commands:
             - amplifyPush --simple
-      artifacts: {}
-      cache:
-        paths:
-          - '**/*'
