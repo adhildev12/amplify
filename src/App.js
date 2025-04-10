@@ -22,11 +22,10 @@ function App() {
         checkUser();
     }, []);
 
-    const handleSignOut = async () => {
+    const handleLogout = async () => {
         try {
             await Auth.signOut();
-            setUser(null);
-            window.location.reload(); // Optional: Reload to trigger reauthentication
+            window.location.reload(); // Reload the page to show the login form
         } catch (error) {
             console.error('Error signing out:', error);
         }
@@ -40,7 +39,7 @@ function App() {
                     Edit <code>src/App.js</code> and save to reload.
                 </p>
                 {user && <p>Welcome, {user.username}</p>}
-                <button onClick={handleSignOut} className="App-button">
+                <button onClick={handleLogout} className="App-button">
                     Sign Out
                 </button>
             </header>
