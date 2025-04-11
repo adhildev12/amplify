@@ -15,7 +15,7 @@ function Dashboard() {
   return (
     <div>
       <h1>Welcome to the amplifyhosting</h1>
-      <h1>Arigatho gozaimasu<h1/>
+      <h1>Arigatho gozaimasu</h1>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
